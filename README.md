@@ -13,6 +13,40 @@ Both framework should be used to create the following:
 - a `/greeting/ {name}` endpoint that returns `Hello {name}` as a String
 - Unit tests for all endpoints
 
+# The Micronaut way
+
+## Project creation
+
+Micronaut has its own CLI tool which has to be installed separatly. In my case I used the Homebrew way of doing it, but you can find the installation ways in the [official docs](https://docs.micronaut.io/snapshot/guide/index.html#cli). As soon as the CLI tool is installed you can bootstrap your project with `mn create-app my-app`. Micronaut uses Gradle as default build tool, as I'm more familiar with Maven and to be able to compare it better with Quarkus I used the `--build maven` flag to initialize it with Maven.
+
+The command `mn create-app getting-started --build maven` took my machine around 5 seconds. There is no detailled logging on the time, so it is just a guessed number. It created:
+
+- the basic project structure for a Maven project
+- a `Application` class
+- an `index.html` file with basic information which can be accessed on `localhost:8080`
+- a `Dockerfile`
+- a rudimentary prefilled `application.yml` and a preconfigured `logback.xml`
+
+You can run the application with `./mvnw clean compile exec:exec`. My machine needed 1.380s to startup the default application.
+
+## Creating the REST endpoints
+
+As the CLI tool does not create an empty controller class the first step is to create this. As Micronaut uses the standard javax specification it is pretty straight forward to create the controller: the class needs an `@Controller` annotation, the methods need the coresponding `@Get("path")` and `@Produces` annotations.
+
+## Dependency Injection
+
+Micronaut uses compile time information to create the DI capability. This makes reflection and proxies nearly obsolete. This minimizes the memory footprint and the startup times. If you want to, you can use the DI/IoC parts of Micronaut without the entire framework. Details can be found in the [official docs](https://docs.micronaut.io/latest/guide/index.html#ioc).
+
+Analogue to the endpoint creation the DI implementation is according to the [Javax specification](http://javax-inject.github.io/javax-inject/). This offers the annotations system for different scopes and the naming capability. Furthermore for different Bean implementations there is a Micronaut `@Primary` to tag the primary implementation of a bean.
+
+Starting up the application with the Service bean and the two endpoints took my machine 1.085s.
+
+## Testing
+
+Micronaut comes with JUnit5 per default. Unittests should be annnotated with `@MicronautTest` so Micronaut boots up the Application context and the embedded server for the test. Micronaut also comes with a minimal Client implementation and a fluid `HttpRequest` API to quickly unittest the endpoints.
+
+As the CLI tool did not create a default test class I started my test implementation with creating the file. After writing the two basic tests my machine took 4.726s to run them with `mvn test`.
+
 # The Quarkus way
 
 ## Project creation
@@ -37,6 +71,10 @@ This command took on my machine 18.002s - not bad at all. It created the followi
 - an empty configuration file
 
 You can start your application with `./mvnw compile quarkus:dev` and access it on `localhost:8080`. Starting up the service with this command took my machine 1.606s. Something nice: starting up the service in `quarkus:dev` allows you to live code without restarting your application.
+
+## Creating the REST endpoints
+
+The initial project setup already created the minimal `/hello` endpoint so there is no further doing necessary here. For creating the "named" endpoint it is enough to create a new method with the needed annotations `@GET`, `@Produces(MediaType.TEXT_PLAIN)` and `@Path("/greeting/{name}")`. Interesting side note: Quarkus does not need an `Application` class, but it would support one. Furthermore all resources get created as a Singleton per default (which can be adjusted via a `Scoped` annotation).
 
 ## Dependency Injection
 

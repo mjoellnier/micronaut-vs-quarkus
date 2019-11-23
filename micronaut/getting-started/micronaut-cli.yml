@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: getting.started
+---
+testFramework: junit
+sourceLanguage: java
