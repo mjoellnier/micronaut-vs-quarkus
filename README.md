@@ -13,13 +13,30 @@ Both framework should be used to create the following:
 - a `/greeting/ {name}` endpoint that returns `Hello {name}` as a String
 - Unit tests for all endpoints
 
+# Direct comparison
+
+With the following table I will compare the two frameworks in a direct and minimal way. The detailled working steps and experiences can be found in the chapters below. **Important: All times are times from my local machine! The first time was taken, there is no scientific approach of measuring multiple times and take the average or something.**
+
+|                                                | Micronaut                   | Quarkus                     |
+| ---------------------------------------------- | --------------------------- | --------------------------- |
+| Used version                                   | 1.2.6                       | 1.0.0.CR2                   |
+| Mainly developed by                            | Object Computing Inc        | RedHat                      |
+| License                                        | Apache Software License 2.0 | Apache Software License 2.0 |
+| Project init                                   | Own CLI tool                | Maven CLI                   |
+| Default Build Framework                        | Gradle                      | Maven                       |
+| Project Setup Time                             | ~7s                         | 18.002s                     |
+| Default project startup time                   | 1.380s                      | 1.606s                      |
+| Project restart after implementing 2 endpoints | 1.085s                      | n/a (hot code replacement)  |
+| Testing frameworks                             | JUnit 5, Micronaut Client   | JUnit 5, RestAssured        |
+| Execution time for two Unittests               | 4.726s                      | 7.661s                      |
+
 # The Micronaut way
 
 ## Project creation
 
 Micronaut has its own CLI tool which has to be installed separatly. In my case I used the Homebrew way of doing it, but you can find the installation ways in the [official docs](https://docs.micronaut.io/snapshot/guide/index.html#cli). As soon as the CLI tool is installed you can bootstrap your project with `mn create-app my-app`. Micronaut uses Gradle as default build tool, as I'm more familiar with Maven and to be able to compare it better with Quarkus I used the `--build maven` flag to initialize it with Maven.
 
-The command `mn create-app getting-started --build maven` took my machine around 5 seconds. There is no detailled logging on the time, so it is just a guessed number. It created:
+The command `mn create-app getting-started --build maven` took my machine around 7 seconds. There is no detailled logging on the time, so it is just a guessed number. It created:
 
 - the basic project structure for a Maven project
 - a `Application` class
@@ -61,7 +78,7 @@ mvn io.quarkus:quarkus-maven-plugin:1.0.0.CR2:create \
     -Dpath="/hello"
 ```
 
-This command took on my machine 18.002s - not bad at all. It created the following:
+This command took on my machine 18.002s. It created the following:
 
 - the basic project structure for a Maven project
 - a `GreetingResource` file that exposes a `/hello` REST endpoint
