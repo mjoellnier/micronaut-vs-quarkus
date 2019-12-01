@@ -1,4 +1,4 @@
-package org.acme.quickstart;
+package org.acme.quickstart.controller;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.acme.quickstart.service.GreetingService;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 
 @Path("/hello")
